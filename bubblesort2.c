@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
  
    
-    vetor_elementos = le_vetor(NUM);
+    vetor_elementos = le_vetor(NUM, 0);
     //imprime_vetor(vetor_elementos, NUM);
     
     resto_elementos_processo_local = (num_elementos % np);

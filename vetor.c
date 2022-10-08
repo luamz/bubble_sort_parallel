@@ -3,29 +3,40 @@
 #include <stdlib.h>
 #include <string.h>
 
-int *le_vetor(int n)
+int *le_vetor(int n, int resto)
 {
     FILE *arq;
     char c[n];
-    int *vetor  = malloc(sizeof(int) * n); 
+    int *vetor  = malloc(sizeof(int) * (n+resto)); 
     char path[20] = "vetores/vet";
     char nome[20];
     sprintf(nome, "%d", n);
     strcat(nome, ".txt");
     strcat(path,nome);
 
+    printf("%d", resto);
+
     printf("%s", path);
     if (arq = fopen(path, "r")) {
         for (int i =0; i<n ; i++){
-            fscanf(arq, "%d,", &vetor[i] ); 
+            fscanf(arq, "%d,", &vetor[i]); 
         }
         fclose(arq);
+        if(resto != 0){
+            for(int i = n; i < (n+1 + resto); i++){
+                printf("%d\n", i);
+                vetor[i] = __INT_MAX__;
+            }
+        }
     }
-
     else {
         printf("Error! Arquivo não existe.");
         exit(1);
     }
+
+    //printf("%d\n", n);
+    //printf("%d", resto);
+
 
     return vetor;
 }
@@ -62,11 +73,11 @@ void imprime_vetor(int A[], int n)
 	printf("\n");
 }
 
-// int main()
-// {
+//int main()
+//{
 //     int *vetor = le_vetor(10000);
 //     imprimeVetor(vetor,10000);
-//     // gera_vetor(10000, 1000);
+    //gera_vetor(10, 1000);
 //     // gera_vetor(20000, 1000);
 //     // gera_vetor(40000, 1000);
-// }
+//}
