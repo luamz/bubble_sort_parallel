@@ -3,23 +3,40 @@
 #include "vetor.c"
 
 #define NUM 10
+ 
+void troca(int *vetor, int i, int j){
+	int temp;
+	temp = vetor[i];
+	vetor[i] = vetor[j];
+	vetor[j] = temp;
+}
 
-char *odd_even(int i)
+void bubblesort(int *vetor, int n){
+	int i,j;
+	for(i = n-2; i >= 0; i--){
+		for(j = 0; j <= i; j++){
+			if(vetor[j] > vetor[j+1]){
+				troca(vetor, j, j+1);
+            }
+        }
+    }
+}
+
+/*char *odd_even(int i)
 {
 
     if (i % 2 == 0)
         return "Even";
     else
         return "Odd ";
-}
+}*/
 
 // Algorithm 10.3
 //  Parallel algorithm of odd-even transposition
 
-int main(argc, argv)
-int argc;
-char **argv;
-{
+ 
+int main(int argc, char *argv[])
+{   
     // ParallelOddEvenSort(double A[], int n) {
     int my_rank, np;
     int resto_elementos_processo_local;              // resto da divisao de numero de elementos por numero de processos
@@ -55,9 +72,7 @@ char **argv;
         tam_novo_vetor = np * num_elementos_processo_local; 
 
         vetor_elementos = le_vetor(num_elementos, (tam_novo_vetor-num_elementos));
-        imprime_vetor(vetor_elementos, tam_novo_vetor);
-       /* int MPI_Bcast( void *buffer, int count, MPI_Datatype datatype, int root, 
-               MPI_Comm comm )*/
+        //imprime_vetor(vetor_elementos, tam_novo_vetor);
             
     }
       
@@ -66,21 +81,13 @@ char **argv;
     MPI_Scatter(vetor_elementos, num_elementos_processo_local,
                         MPI_INT, vetor_elementos_processo_local, num_elementos_processo_local,
                         MPI_INT, 0, MPI_COMM_WORLD);
-
-    // MPI_Scatterv(vetor_elementos, num_elementos_processo_local, displacement,
-    //             MPI_INT, &vetor_elementos_processo_local, 100,
-    //             MPI_INT, 0, MPI_COMM_WORLD);
-
-      printf("RANK: %d\n", my_rank);
-    //imprime_vetor(vetor_elementos_processo_local, num_elementos_processo_local[my_rank]);
-     imprime_vetor(vetor_elementos_processo_local, num_elementos_processo_local);
     
- 
-    /*for (int i = 0; i < num_elementos_processo_local; i++) {
-        printf("%d : %d ", i, vetor_elementos_processo_local[i]);
-    }
-    printf("\n");*/
+    bubblesort(vetor_elementos_processo_local, num_elementos_processo_local);
+   
 
+    printf("RANK: %d\n", my_rank);
+    imprime_vetor(vetor_elementos_processo_local, num_elementos_processo_local);
+    
     MPI_Finalize();
     return 0;
 }
