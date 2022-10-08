@@ -3,28 +3,28 @@
 #include <stdlib.h>
 #include <string.h>
 
-int *le_vetor(int n, int resto)
+double *le_vetor(int n, int resto)
 {
     FILE *arq;
     char c[n];
-    int *vetor  = malloc(sizeof(int) * (n+resto)); 
+    double *vetor  = malloc(sizeof(double) * (n+resto)); 
     char path[20] = "vetores/vet";
     char nome[20];
     sprintf(nome, "%d", n);
     strcat(nome, ".txt");
     strcat(path,nome);
 
-    printf("%d", resto);
+    //printf("%d", resto);
 
-    printf("%s", path);
+    //printf("%s", path);
     if (arq = fopen(path, "r")) {
         for (int i =0; i<n ; i++){
-            fscanf(arq, "%d,", &vetor[i]); 
+            fscanf(arq, "%lf,", &vetor[i]); 
         }
         fclose(arq);
         if(resto != 0){
             for(int i = n; i < (n+1 + resto); i++){
-                printf("%d\n", i);
+                //printf("%d\n", i);
                 vetor[i] = __INT_MAX__;
             }
         }
@@ -66,10 +66,10 @@ void gera_vetor(int n, int semente)
     fclose(arquivo);
 }
 
-void imprime_vetor(int A[], int n)
+void imprime_vetor(double A[], int n)
 {
 	for (int i = 0; i < n; i++)
-		printf("%d ", A[i]);
+		printf("%lf ", A[i]);
 	printf("\n");
 }
 
