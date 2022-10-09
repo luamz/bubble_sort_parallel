@@ -23,19 +23,21 @@ void bubble_sort(double *vetor, int n){
 
 int main (){
 
-	#define NUM 10
+	#define NUM 20000
 
 	double *vetor_elementos; 
 	vetor_elementos = le_vetor(NUM, 0);
-	
-	time_t tempo_inicial;
+
+	clock_t t;
+    t = clock();
      
 	bubble_sort(vetor_elementos, NUM);
 
 	imprime_vetor(vetor_elementos, NUM);
 
-	time_t tempo_final;
+	t = clock() - t;
+    double time_taken = ((double)t)/CLOCKS_PER_SEC; // calculate the elapsed time
 
-	printf("Tempo de execução: %ld", (tempo_final-tempo_inicial));
+	printf("Tempo de execução: %f segundos\n", time_taken);
 
 }
