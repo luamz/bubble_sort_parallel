@@ -1,9 +1,17 @@
 #include <stdio.h>
 #include <mpi.h>
+#include <time.h>
 #include "util.c"
 #include "bubble_sort_sequencial.c"
+#include <sys/time.h>
+#include <time.h>
 
 #define NUM 20000
+
+float time_diff(struct timeval *start, struct timeval *end)
+{
+    return (end->tv_sec - start->tv_sec) + 1e-6*(end->tv_usec - start->tv_usec);
+}
 
 void imprime_vetor_processos(int my_rank, int np, double *vetor_elementos, int tam_vetor,
                              double *vetor_elementos_processo_local, int num_elementos_processo_local)
@@ -27,7 +35,7 @@ void imprime_vetor_processos(int my_rank, int np, double *vetor_elementos, int t
     }
 }
 
-double *merge(int my_rank, double *vetor_1, double *vetor_2, int num_elementos_processo_local)
+double *merge(double *vetor_1, double *vetor_2, int num_elementos_processo_local)
 {
     int counter = 0;
     int merge_size = num_elementos_processo_local * 2;
@@ -49,7 +57,7 @@ double *merge(int my_rank, double *vetor_1, double *vetor_2, int num_elementos_p
     return vetor_merge;
 }
 
-void split(double *vetor_1, double *vetor_2, double *vetor_merge, int num_elementos_processo_local, int my_rank)
+void split(double *vetor_1, double *vetor_2, double *vetor_merge, int num_elementos_processo_local)
 {
     int i = 0, j = 0, k = 0;
     int merge_size = num_elementos_processo_local * 2;
@@ -72,7 +80,7 @@ void split(double *vetor_1, double *vetor_2, double *vetor_merge, int num_elemen
 }
 
 void compare_split(double *vetor_elementos_processo_local, int num_elementos_processo_local,
-                   int my_rank, int vizinho, int primeiro_do_par, MPI_Status status)
+                   int vizinho, int primeiro_do_par, MPI_Status status)
 {
 
     double *vetor_processo_vizinho = malloc(sizeof(double) * (num_elementos_processo_local));
@@ -82,20 +90,19 @@ void compare_split(double *vetor_elementos_processo_local, int num_elementos_pro
                  vetor_processo_vizinho, num_elementos_processo_local, MPI_DOUBLE, vizinho, 0,
                  MPI_COMM_WORLD, &status);
 
-    vetor_merge = merge(my_rank, vetor_elementos_processo_local, vetor_processo_vizinho,
-                        num_elementos_processo_local);
+    vetor_merge = merge(vetor_elementos_processo_local, vetor_processo_vizinho, num_elementos_processo_local);
 
     if (primeiro_do_par == 1)
     {
-        split(vetor_elementos_processo_local, vetor_processo_vizinho, vetor_merge, num_elementos_processo_local, my_rank);
+        split(vetor_elementos_processo_local, vetor_processo_vizinho, vetor_merge, num_elementos_processo_local);
     }
     else
     {
-        split(vetor_processo_vizinho, vetor_elementos_processo_local, vetor_merge, num_elementos_processo_local, my_rank);
+        split(vetor_processo_vizinho, vetor_elementos_processo_local, vetor_merge, num_elementos_processo_local);
     }
 }
 
-void bubblesort_odd_even(int np, int my_rank, double *vetor_elementos_processo_local,
+void bubblesort_odd_even(int my_rank, int np, double *vetor_elementos_processo_local,
                          int num_elementos_processo_local)
 {
     MPI_Status status;
@@ -109,7 +116,7 @@ void bubblesort_odd_even(int np, int my_rank, double *vetor_elementos_processo_l
                 if (my_rank < np - 1) // Compare-exchange com o proximo vizinho
                 {
                     compare_split(vetor_elementos_processo_local, num_elementos_processo_local,
-                                  my_rank, my_rank + 1, 1, status);
+                                  my_rank + 1, 1, status);
                 }
             }
             else
@@ -117,7 +124,7 @@ void bubblesort_odd_even(int np, int my_rank, double *vetor_elementos_processo_l
                 if (my_rank > 0) // Compare-exchange com o vizinho anterior
                 {
                     compare_split(vetor_elementos_processo_local, num_elementos_processo_local,
-                                  my_rank, my_rank - 1, 0, status);
+                                  my_rank - 1, 0, status);
                 }
             }
         }
@@ -129,20 +136,38 @@ void bubblesort_odd_even(int np, int my_rank, double *vetor_elementos_processo_l
                 if (my_rank < np - 1) // Compare-exchange com o proximo vizinho
                 {
                     compare_split(vetor_elementos_processo_local, num_elementos_processo_local,
-                                  my_rank, my_rank + 1, 1, status);
+                                  my_rank + 1, 1, status);
                 }
             }
             else
             { // Compare-exchange com o vizinho anterior
                 compare_split(vetor_elementos_processo_local, num_elementos_processo_local,
-                              my_rank, my_rank - 1, 0, status);
+                              my_rank - 1, 0, status);
             }
         }
     }
 }
 
+int calcula_novo_tamanho_vetor(int np, int num_elementos)
+{
+    int num_elementos_processo_local;
+    int resto_elementos_processo_local = num_elementos % np;
+
+    if (resto_elementos_processo_local == 0)
+    {
+        num_elementos_processo_local = (num_elementos / np);
+    }
+    else
+    {
+        num_elementos_processo_local = (num_elementos / np) + 1;
+    }
+
+    return (np * num_elementos_processo_local);
+}
+
 int main(int argc, char *argv[])
 {
+    time_t comeco, final;
     int my_rank, np;
     double *vetor_elementos;                // Elementos do vetor a ser ordenado
     double *vetor_elementos_processo_local; // Elementos a serem alocados a cada processo
@@ -150,24 +175,21 @@ int main(int argc, char *argv[])
     int num_elementos_processo_local;       // Numero de elementos a serem alocados a cada processo
     int tam_novo_vetor;
 
+    //struct timespec comeco, final;
+    
+    struct timeval start;
+    struct timeval end;
+
+    
     MPI_Init(&argc, &argv);                  // Inicializa o ambiente de execucao
     MPI_Comm_size(MPI_COMM_WORLD, &np);      // Numero de processos
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); // Numero do processo
 
     if (my_rank == 0)
     {
-        int resto_elementos_processo_local = num_elementos % np;
-
-        if (resto_elementos_processo_local == 0)
-        {
-            num_elementos_processo_local = (num_elementos / np);
-        }
-        else
-        {
-            num_elementos_processo_local = (num_elementos / np) + 1;
-        }
-
-        tam_novo_vetor = np * num_elementos_processo_local;
+        //clock_gettime(CLOCK_REALTIME, &comeco);
+        gettimeofday(&start, NULL);
+        tam_novo_vetor = calcula_novo_tamanho_vetor(np, num_elementos);
         vetor_elementos = le_vetor(num_elementos, (tam_novo_vetor - num_elementos));
     }
 
@@ -183,25 +205,28 @@ int main(int argc, char *argv[])
     MPI_Barrier(MPI_COMM_WORLD);
 
     bubble_sort(vetor_elementos_processo_local, num_elementos_processo_local);
-    bubblesort_odd_even(np, my_rank, vetor_elementos_processo_local, num_elementos_processo_local);
+    bubblesort_odd_even(my_rank, np, vetor_elementos_processo_local, num_elementos_processo_local);
 
     MPI_Gather(vetor_elementos_processo_local, num_elementos_processo_local, MPI_DOUBLE,
                vetor_elementos, num_elementos_processo_local, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    free(vetor_elementos_processo_local);
 
     if (my_rank == 0)
     {
         printf("\nVetor ordenado: ");
         imprime_vetor_global(vetor_elementos, tam_novo_vetor);
+        free(vetor_elementos);
+        //time_t end = time(NULL);
+        gettimeofday(&end, NULL);
+        //clock_gettime(CLOCK_REALTIME, &final);
+       // time_t tempo_de_execucao = final - comeco;
+        //float tempo = end.tv_sec - start.tv_sec;
+       // printf("Tempo de execução: %ld segundos.\n", tempo_de_execucao);
+        printf("time spent: %0.8f sec\n", time_diff(&start, &end));
     }
 
     MPI_Finalize();
-
-    free(vetor_elementos);
-    free(vetor_elementos_processo_local);
-
-    return 0;
-
-    free(vetor_elementos);
 
     return 0;
 }
