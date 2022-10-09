@@ -1,5 +1,5 @@
 # bubble_sort
 
+//mpicc bubble_sort.c -o bubble
 
-
-// mpirun -n 6 bubble_sort
+//mpirun -np (numero de processos) bubble_sort
