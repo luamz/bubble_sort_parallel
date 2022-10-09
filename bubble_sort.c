@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <mpi.h>
 #include "vetor.c"
+#include "utils.c"
 
-#define NUM 10
+#define NUM 40000
 
 
 void imprime_vetor_processos(int my_rank, int np, double *vetor_elementos, int tam_vetor, double *vetor_elementos_processo_local, int num_elementos_processo_local) {
@@ -19,25 +20,6 @@ void imprime_vetor_processos(int my_rank, int np, double *vetor_elementos, int t
             imprime_vetor(vetor_elementos_processo_local, num_elementos_processo_local);
         }
         MPI_Barrier(MPI_COMM_WORLD);
-    }
-}
- 
-void troca(double *vetor, int i, int j){
-	int temp;
-	temp = vetor[i];
-	vetor[i] = vetor[j];
-	vetor[j] = temp;
-}
-
-void bubble_sort(double *vetor, int n){
-
-    int i,j;
-	for(i = n-2; i >= 0; i--){
-		for(j = 0; j <= i; j++){
-			if(vetor[j] > vetor[j+1]){
-				troca(vetor, j, j+1);
-            }
-        }
     }
 }
 
@@ -147,6 +129,7 @@ int main(int argc, char *argv[])
     int num_elementos = NUM;                    // Numero total de elementos do vetor a ser ordenado
     int num_elementos_processo_local;           // Numero de elementos a serem alocados a cada processo
     int tam_novo_vetor;
+    double start, finish, loc_elapsed, elapsed;
 
     MPI_Init(&argc, &argv);                     // Inicializa o ambiente de execucao
     MPI_Comm_size(MPI_COMM_WORLD, &np);         // Numero de processos
@@ -166,7 +149,8 @@ int main(int argc, char *argv[])
         tam_novo_vetor = np * num_elementos_processo_local; 
         vetor_elementos = le_vetor(num_elementos, (tam_novo_vetor - num_elementos));
     }
-      
+
+    start = MPI_Wtime();
     vetor_elementos_processo_local = (double *) malloc (num_elementos / np * sizeof(double));
 
     MPI_Bcast(&num_elementos_processo_local, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -177,17 +161,24 @@ int main(int argc, char *argv[])
                              num_elementos_processo_local);
     
     bubble_sort(vetor_elementos_processo_local, num_elementos_processo_local);
-    
+
     bubblesort_odd_even(np,my_rank,vetor_elementos_processo_local,num_elementos_processo_local);
 
     MPI_Gather(vetor_elementos_processo_local, num_elementos_processo_local, MPI_DOUBLE,
                vetor_elementos, num_elementos_processo_local, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
+    finish = MPI_Wtime();
+    loc_elapsed = finish-start;
+    MPI_Reduce(&loc_elapsed, &elapsed, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+
     if (my_rank == 0){
         printf("\n");
         imprime_vetor(vetor_elementos,tam_novo_vetor);
+        printf("\nSorting took %f seconds \n", loc_elapsed);
     }
-  
+
+    free(vetor_elementos);
+    free(vetor_elementos_processo_local);
     MPI_Finalize();
     return 0;
 }
