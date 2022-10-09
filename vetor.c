@@ -14,9 +14,6 @@ double *le_vetor(int n, int resto)
     strcat(nome, ".txt");
     strcat(path,nome);
 
-    //printf("%d", resto);
-
-    //printf("%s", path);
     if (arq = fopen(path, "r")) {
         for (int i =0; i<n ; i++){
             fscanf(arq, "%lf,", &vetor[i]); 
@@ -24,7 +21,6 @@ double *le_vetor(int n, int resto)
         fclose(arq);
         if(resto != 0){
             for(int i = n; i < (n+1 + resto); i++){
-                //printf("%d\n", i);
                 vetor[i] = __INT_MAX__;
             }
         }
@@ -33,10 +29,6 @@ double *le_vetor(int n, int resto)
         printf("Error! Arquivo não existe.");
         exit(1);
     }
-
-    //printf("%d\n", n);
-    //printf("%d", resto);
-
 
     return vetor;
 }
@@ -73,11 +65,15 @@ void imprime_vetor(double A[], int n)
 	printf("\n");
 }
 
-//int main()
-//{
-//     int *vetor = le_vetor(10000);
-//     imprimeVetor(vetor,10000);
-    //gera_vetor(10, 1000);
-//     // gera_vetor(20000, 1000);
-//     // gera_vetor(40000, 1000);
-//}
+/*int main()
+{
+    int *vetor = le_vetor(10000);
+    imprimeVetor(vetor,10000);
+    
+    //teste
+    gera_vetor(10, 1000);
+
+    gera_vetor(10000, 1000);
+    gera_vetor(20000, 1000);
+    gera_vetor(40000, 1000);
+}*/
