@@ -65,15 +65,9 @@ void imprime_vetor(double A[], int n)
 	printf("\n");
 }
 
-/*int main()
-{
-    int *vetor = le_vetor(10000);
-    imprimeVetor(vetor,10000);
-    
-    //teste
-    gera_vetor(10, 1000);
-
-    gera_vetor(10000, 1000);
-    gera_vetor(20000, 1000);
-    gera_vetor(40000, 1000);
-}*/
+// int main()
+// {
+//     gera_vetor(10000, 100000);
+//     gera_vetor(20000, 100000);
+//     gera_vetor(40000, 100000);
+// }
