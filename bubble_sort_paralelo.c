@@ -8,7 +8,7 @@
 
 #define NUM 20000
 
-float time_diff(struct timeval *start, struct timeval *end)
+float calcula_tempo_gasto(struct timeval *start, struct timeval *end)
 {
     return (end->tv_sec - start->tv_sec) + 1e-6*(end->tv_usec - start->tv_usec);
 }
@@ -167,19 +167,14 @@ int calcula_novo_tamanho_vetor(int np, int num_elementos)
 
 int main(int argc, char *argv[])
 {
-    time_t comeco, final;
     int my_rank, np;
     double *vetor_elementos;                // Elementos do vetor a ser ordenado
     double *vetor_elementos_processo_local; // Elementos a serem alocados a cada processo
     int num_elementos = NUM;                // Numero total de elementos do vetor a ser ordenado
     int num_elementos_processo_local;       // Numero de elementos a serem alocados a cada processo
     int tam_novo_vetor;
-
-    //struct timespec comeco, final;
     
-    struct timeval start;
-    struct timeval end;
-
+    struct timeval tempo_inicial, tempo_final;
     
     MPI_Init(&argc, &argv);                  // Inicializa o ambiente de execucao
     MPI_Comm_size(MPI_COMM_WORLD, &np);      // Numero de processos
@@ -188,7 +183,7 @@ int main(int argc, char *argv[])
     if (my_rank == 0)
     {
         //clock_gettime(CLOCK_REALTIME, &comeco);
-        gettimeofday(&start, NULL);
+        gettimeofday(&tempo_inicial, NULL);
         tam_novo_vetor = calcula_novo_tamanho_vetor(np, num_elementos);
         vetor_elementos = le_vetor(num_elementos, (tam_novo_vetor - num_elementos));
     }
@@ -216,14 +211,12 @@ int main(int argc, char *argv[])
     {
         printf("\nVetor ordenado: ");
         imprime_vetor_global(vetor_elementos, tam_novo_vetor);
+        
         free(vetor_elementos);
-        //time_t end = time(NULL);
-        gettimeofday(&end, NULL);
-        //clock_gettime(CLOCK_REALTIME, &final);
-       // time_t tempo_de_execucao = final - comeco;
-        //float tempo = end.tv_sec - start.tv_sec;
-       // printf("Tempo de execução: %ld segundos.\n", tempo_de_execucao);
-        printf("time spent: %0.8f sec\n", time_diff(&start, &end));
+
+        gettimeofday(&tempo_final, NULL);
+       
+        printf("Tempo de execução gasto: %0.8f sec\n", calcula_tempo_gasto(&tempo_inicial, &tempo_final));
     }
 
     MPI_Finalize();
