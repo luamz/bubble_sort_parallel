@@ -61,7 +61,7 @@ void gera_vetor(int n, int semente)
 void imprime_vetor(double A[], int n)
 {
 	for (int i = 0; i < n; i++)
-		printf("%lf ", A[i]);
+		printf("%g ", A[i]);
 	printf("\n");
 }
 

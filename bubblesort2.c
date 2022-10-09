@@ -4,7 +4,7 @@
  
 #define NUM 10
  
- void troca(int *vetor, int i, int j){
+void troca(int *vetor, int i, int j){
 	int temp;
 	temp = vetor[i];
 	vetor[i] = vetor[j];
