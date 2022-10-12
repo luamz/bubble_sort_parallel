@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -39,6 +40,8 @@ void gera_vetor(int n, int semente)
     char nome[20];
     char caminho[20] = "vetores/vet";
 
+    srand(time(NULL));
+
     FILE *arquivo;
     sprintf(nome, "%d", n);
     strcat(nome, ".txt");
@@ -57,18 +60,8 @@ void gera_vetor(int n, int semente)
 
 void imprime_vetor(double A[], int n)
 {
-	for (int i = 0; i < n; i++) {
-        printf("%g ", A[i]);
-    }
-	printf("\n");
-}
-
-void imprime_vetor_global(double A[], int n)
-{
 	for (int i = 0; i < n; i++)
-        if (A[i] != __INT_MAX__){
-		    printf("%g ", A[i]);
-        }
+		printf("%g ", A[i]);
 	printf("\n");
 }
 
