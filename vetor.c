@@ -58,12 +58,13 @@ void gera_vetor(int n, int semente)
     fclose(arquivo);
 }
 
-void imprime_vetor(double A[], int n)
+
+/*void imprime_vetor(double A[], int n)
 {
 	for (int i = 0; i < n; i++)
 		printf("%g ", A[i]);
 	printf("\n");
-}
+}*/
 
 // int main()
 // {
