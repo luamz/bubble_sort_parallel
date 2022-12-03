@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <omp.h>
-#include "vetor.c"
-#include "utils.c"
+#include <stdlib.h>
+#include <string.h>
 
 #define nthreads 4
 #define NUM 10
 
 void imprime_vetor(double *vetor_elementos, int num_elementos) {
     for (int i = 0; i < num_elementos; i++){
-        printf("%f", vetor_elementos[i]);
+        printf("%.2f  ", vetor_elementos[i]);
     }
 }
 
@@ -47,6 +47,36 @@ void bubblesort_odd_even(int n_threads, double *vetor_elementos, int num_element
     }
 }
  
+double *le_vetor(int n, int resto)
+{
+    FILE *arq;
+    char c[n];
+    double *vetor  = malloc(sizeof(double) * (n+resto)); 
+    char path[20] = "vetores/vet";
+    char nome[20];
+    sprintf(nome, "%d", n);
+    strcat(nome, ".txt");
+    strcat(path,nome);
+
+    if (arq = fopen(path, "r")) {
+        for (int i =0; i<n ; i++){
+            fscanf(arq, "%lf,", &vetor[i]); 
+        }
+        fclose(arq);
+        if(resto != 0){
+            for(int i = n; i < (n+1 + resto); i++){
+                vetor[i] = __INT_MAX__;
+            }
+        }
+    }
+    else {
+        printf("Error! Arquivo não existe.");
+        exit(1);
+    }
+
+    return vetor;
+}
+
 int main()
 {
     omp_set_num_threads(nthreads);
@@ -91,4 +121,4 @@ int main()
     //free(vetor_elementos_processo_local);
 
     return 0;
-}
+} 

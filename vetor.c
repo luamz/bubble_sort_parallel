@@ -34,7 +34,6 @@ double *le_vetor(int n, int resto)
 }
 
 
-
 void gera_vetor(int n, int semente)
 {
     char nome[20];
@@ -66,9 +65,9 @@ void gera_vetor(int n, int semente)
 	printf("\n");
 }*/
 
-// int main()
-// {
-//     gera_vetor(10000, 100000);
-//     gera_vetor(20000, 100000);
-//     gera_vetor(40000, 100000);
-// }
+/*int main()
+{
+    gera_vetor(10000, 100000);
+    gera_vetor(20000, 100000);
+    gera_vetor(40000, 100000);
+}*/
