@@ -21,7 +21,7 @@ void bubble_sort(double *vetor, int n){
     }
 }
 
-int main (){
+/*int main (){
 
 	#define NUM 20000
 
@@ -40,4 +40,4 @@ int main (){
 
 	printf("Tempo de execução: %f segundos\n", time_taken);
 
-}
+}*/
