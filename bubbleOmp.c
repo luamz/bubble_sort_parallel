@@ -42,17 +42,17 @@ void bubblesort_odd_even(double *vetor_elementos, int num_elementos)
 int main(int argc, char *argv[])
 {
     if (argc < 3) {
-        printf("Not enough arguments!\n");
+        printf("Você deve passar o número de elementos a ordernar e o número de threads!\n");
         return 0;
     }
 
-    int elementos = atoi(argv[1]); // tamanho do vetor
-    int nthreads = atoi(argv[2]); // número de threads
+    int elementos = atoi(argv[1]);  // Lendo o tamanho do vetor
+    int nthreads = atoi(argv[2]);   // Lendo o número de threads
 
-    omp_set_num_threads(nthreads); // Número de threads
-    double *vetor_elementos;       // Elementos do vetor a ser ordenado
-    int num_elementos = elementos;       // Número total de elementos do vetor a ser ordenado
-    double inicio, fim, duracao;
+    omp_set_num_threads(nthreads);  // Settando o Número de threads
+    double *vetor_elementos;        // Elementos do vetor a ser ordenado
+    int num_elementos = elementos;  // Número total de elementos do vetor a ser ordenado
+    double inicio, fim, duracao;    // Tempos
 
     vetor_elementos = le_vetor(num_elementos, 0);
 

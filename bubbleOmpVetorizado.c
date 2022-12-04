@@ -46,13 +46,13 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    int elementos = atoi(argv[1]); // tamanho do vetor
-    int nthreads = atoi(argv[2]); // número de threads
+    int elementos = atoi(argv[1]);  // Lendo o tamanho do vetor
+    int nthreads = atoi(argv[2]);   // Lendo o número de threads
 
-    omp_set_num_threads(nthreads); // Número de threads
-    double *vetor_elementos;       // Elementos do vetor a ser ordenado
-    int num_elementos = elementos;       // Número total de elementos do vetor a ser ordenado
-    double inicio, fim, duracao;
+    omp_set_num_threads(nthreads);  // Settando o Número de threads
+    double *vetor_elementos;        // Elementos do vetor a ser ordenado
+    int num_elementos = elementos;  // Número total de elementos do vetor a ser ordenado
+    double inicio, fim, duracao;    // Tempos
 
     vetor_elementos = le_vetor(num_elementos, 0);
 
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     bubblesort_odd_even(vetor_elementos, num_elementos);
     duracao = omp_get_wtime() - inicio;
 
-    imprime_vetor(vetor_elementos, num_elementos);
+    // imprime_vetor(vetor_elementos, num_elementos);
     printf("\nTempo de Execução: %f segundos \n", duracao);
 
     free(vetor_elementos);
