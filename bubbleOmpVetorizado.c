@@ -13,7 +13,7 @@ void bubblesort_odd_even(double *vetor_elementos, int num_elementos)
         {
             if (iteracao % 2 == 1) // Odd iteration
             {
-                #pragma omp simd
+                #pragma omp for simd
                 for (int i = 1; i < num_elementos - 1; i += 2)
                 {
                     if (vetor_elementos[i] > vetor_elementos[i + 1])
@@ -25,7 +25,7 @@ void bubblesort_odd_even(double *vetor_elementos, int num_elementos)
             }
             if (iteracao % 2 == 0) // Even iteration
             {
-                #pragma omp simd
+                #pragma omp for simd
                 for (int i = 1; i < num_elementos; i += 2)
                 {
                     if (vetor_elementos[i - 1] > vetor_elementos[i])
