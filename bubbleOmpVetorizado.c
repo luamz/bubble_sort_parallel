@@ -46,12 +46,11 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    int elementos = atoi(argv[1]);  // Lendo o tamanho do vetor
+    int num_elementos = atoi(argv[1]);  // Lendo o tamanho do vetor, ou seja, o número total de elementos do vetor a ser ordenado
     int nthreads = atoi(argv[2]);   // Lendo o número de threads
 
     omp_set_num_threads(nthreads);  // Settando o Número de threads
     double *vetor_elementos;        // Elementos do vetor a ser ordenado
-    int num_elementos = elementos;  // Número total de elementos do vetor a ser ordenado
     double inicio, fim, duracao;    // Tempos
 
     vetor_elementos = le_vetor(num_elementos, 0);
