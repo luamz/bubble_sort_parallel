@@ -8,7 +8,7 @@ void bubblesort_odd_even(double *vetor_elementos, int num_elementos)
 {
     #pragma omp parallel shared(vetor_elementos, num_elementos)
     {
-        int tid = omp_get_thread_num();
+        //int tid = omp_get_thread_num();
         for (int iteracao = 0; iteracao < num_elementos; iteracao++)
         {
             if (iteracao % 2 == 1) // Odd iteration
