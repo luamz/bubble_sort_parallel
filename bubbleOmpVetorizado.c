@@ -8,7 +8,7 @@ void bubblesort_odd_even(double *vetor_elementos, int num_elementos)
 {
     #pragma omp parallel shared(vetor_elementos, num_elementos)
     {
-        //int tid = omp_get_thread_num();
+        int tid = omp_get_thread_num();
         for (int iteracao = 0; iteracao < num_elementos; iteracao++)
         {
             if (iteracao % 2 == 1) // Odd iteration
@@ -18,7 +18,7 @@ void bubblesort_odd_even(double *vetor_elementos, int num_elementos)
                 {
                     if (vetor_elementos[i] > vetor_elementos[i + 1])
                     {
-                        //printf("thread: %d - iteração %d, troca %g e %g \n", tid, iteracao, vetor_elementos[i], vetor_elementos[i+1]);
+                        printf("thread: %d - iteração %d, troca %g e %g \n", tid, iteracao, vetor_elementos[i], vetor_elementos[i+1]);
                         troca(vetor_elementos, i, i + 1);
                     }
                 }
@@ -30,7 +30,7 @@ void bubblesort_odd_even(double *vetor_elementos, int num_elementos)
                 {
                     if (vetor_elementos[i - 1] > vetor_elementos[i])
                     {
-                        //printf("thread: %d - iteração %d, troca %g e %g \n", tid, iteracao, vetor_elementos[i-1], vetor_elementos[i]);
+                        printf("thread: %d - iteração %d, troca %g e %g \n", tid, iteracao, vetor_elementos[i-1], vetor_elementos[i]);
                         troca(vetor_elementos, i, i - 1);
                     }
                 }
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
     omp_set_num_threads(nthreads);  // Settando o Número de threads
     double *vetor_elementos;        // Elementos do vetor a ser ordenado
-    double inicio, fim, duracao;    // Tempos
+    double inicio, fim;             // Tempos
 
     vetor_elementos = le_vetor(num_elementos, 0);
 
@@ -59,10 +59,10 @@ int main(int argc, char *argv[])
 
     inicio = omp_get_wtime();
     bubblesort_odd_even(vetor_elementos, num_elementos);
-    duracao = omp_get_wtime() - inicio;
+    fim = omp_get_wtime() - inicio;
 
     // imprime_vetor(vetor_elementos, num_elementos);
-    printf("\nTempo de Execução: %f segundos \n", duracao);
+    printf("\nTempo de Execução: %f segundos \n", fim);
 
     free(vetor_elementos);
 
