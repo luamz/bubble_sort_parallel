@@ -10,6 +10,9 @@ Nesse trabalho nós comparamos o desempenho do bubble sort (método de ordenaç�
 
  - Sequêncial
  
+ Para compilar rode ``gcc bubble_sort_sequencial.c -o bubble_sort_sequencial`` e para executar rode ``./bubble_sort_sequencial``
+
+ 
  - Paralelizado com MPI
  
 Para compilar rode ``mpicc bubble_sort_mpi.c -o bubble_sort_mpi`` e para executar rode `` mpirun -n X bubble_sort_mpi`` substituindo o "X" pelo número desejado de processos.
