@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <mpi.h>
-#include "vetor.c"
 #include "utils.c"
 
 #define NUM 40000
@@ -157,8 +156,8 @@ int main(int argc, char *argv[])
     MPI_Scatter(vetor_elementos, num_elementos_processo_local, MPI_DOUBLE,
                 vetor_elementos_processo_local, num_elementos_processo_local, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    imprime_vetor_processos(my_rank,np,vetor_elementos,tam_novo_vetor,vetor_elementos_processo_local,
-                             num_elementos_processo_local);
+    // imprime_vetor_processos(my_rank,np,vetor_elementos,tam_novo_vetor,vetor_elementos_processo_local,
+    //                          num_elementos_processo_local);
     
     bubble_sort(vetor_elementos_processo_local, num_elementos_processo_local);
 
@@ -172,8 +171,8 @@ int main(int argc, char *argv[])
     MPI_Reduce(&duracao, &elapsed, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0){
-        printf("\n");
-        imprime_vetor(vetor_elementos,tam_novo_vetor);
+        // printf("\n");
+        // imprime_vetor(vetor_elementos,tam_novo_vetor);
         printf("\nTempo de Execução: %f segundos \n", duracao);
     }
 
